@@ -16,7 +16,7 @@ function calculateTripCost(distance, fuelPrice, mileage) {
           console.log('Distance text found:', distanceText);
   
           const distanceMatch = distanceText.match(/([\d.]+)\s*km/);
-          if (distanceMatch && !distanceText.includes('INR')) {
+          if (distanceMatch && !distanceText.includes('₹')) {
             const distance = parseFloat(distanceMatch[1]);
             console.log('Parsed distance:', distance);
   
@@ -26,7 +26,7 @@ function calculateTripCost(distance, fuelPrice, mileage) {
                 const tripCost = calculateTripCost(distance, data.fuelPrice, data.mileage);
                 console.log('Trip cost calculated:', tripCost);
   
-                const tripCostText = ` (${tripCost.toFixed(2)} INR)`;
+                const tripCostText = ` (₹ ${tripCost.toFixed(2)})`;
                 distanceTextElement.innerText = distanceText + tripCostText;
   
                 console.log('Trip cost appended to distance text:', distanceTextElement.innerText);
@@ -67,7 +67,7 @@ function calculateTripCost(distance, fuelPrice, mileage) {
     const tripElements = document.querySelectorAll('.UgZKXd .XdKEzd .ivN21e');
     tripElements.forEach(distanceElement => {
       const distanceTextElement = distanceElement.querySelector('div:nth-child(1)');
-      if (distanceTextElement && !distanceTextElement.innerText.includes('INR')) {
+      if (distanceTextElement && !distanceTextElement.innerText.includes('₹')) {
         addTripCost();
       }
     });
