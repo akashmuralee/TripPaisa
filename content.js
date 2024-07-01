@@ -3,37 +3,39 @@ function calculateTripCost(distance, fuelPrice, mileage) {
     return (distance / mileage) * fuelPrice;
   }
   
-  // Function to add trip cost below distance
+  // Function to add trip cost to the distance element
   function addTripCost() {
-    // Attempt to find the distance elements
     const tripElements = document.querySelectorAll('.UgZKXd .XdKEzd .ivN21e');
     console.log('Checking for trip elements:', tripElements);
   
     if (tripElements.length > 0) {
       tripElements.forEach(distanceElement => {
-        const distanceText = distanceElement.innerText;
-        console.log('Distance text found:', distanceText);
+        const distanceTextElement = distanceElement.querySelector('div:nth-child(1)');
+        if (distanceTextElement) {
+          const distanceText = distanceTextElement.innerText;
+          console.log('Distance text found:', distanceText);
   
-        const distance = parseFloat(distanceText.replace(' km', ''));
-        console.log('Parsed distance:', distance);
+          const distanceMatch = distanceText.match(/([\d.]+)\s*km/);
+          if (distanceMatch && !distanceText.includes('INR')) {
+            const distance = parseFloat(distanceMatch[1]);
+            console.log('Parsed distance:', distance);
   
-        chrome.storage.sync.get(['fuelPrice', 'mileage'], function (data) {
-          console.log('Stored data:', data);
-          if (data.fuelPrice && data.mileage) {
-            const tripCost = calculateTripCost(distance, data.fuelPrice, data.mileage);
-            console.log('Trip cost calculated:', tripCost);
+            chrome.storage.sync.get(['fuelPrice', 'mileage'], function (data) {
+              console.log('Stored data:', data);
+              if (data.fuelPrice && data.mileage) {
+                const tripCost = calculateTripCost(distance, data.fuelPrice, data.mileage);
+                console.log('Trip cost calculated:', tripCost);
   
-            const tripCostElement = document.createElement('div');
-            tripCostElement.innerText = `Trip Cost: ${tripCost.toFixed(2)} INR`;
-            tripCostElement.style.fontWeight = 'bold';
-            tripCostElement.style.marginTop = '5px';
-            distanceElement.parentElement.appendChild(tripCostElement);
+                const tripCostText = ` (${tripCost.toFixed(2)} INR)`;
+                distanceTextElement.innerText = distanceText + tripCostText;
   
-            console.log('Trip cost element added:', tripCostElement);
-          } else {
-            console.log('Fuel price or mileage not set.');
+                console.log('Trip cost appended to distance text:', distanceTextElement.innerText);
+              } else {
+                console.log('Fuel price or mileage not set.');
+              }
+            });
           }
-        });
+        }
       });
     } else {
       console.log('Distance elements not found.');
@@ -61,6 +63,14 @@ function calculateTripCost(distance, fuelPrice, mileage) {
   window.addEventListener('load', waitForDistanceElement);
   
   // Add trip cost when the URL changes (Google Maps SPA)
-  const observer = new MutationObserver(waitForDistanceElement);
+  const observer = new MutationObserver(() => {
+    const tripElements = document.querySelectorAll('.UgZKXd .XdKEzd .ivN21e');
+    tripElements.forEach(distanceElement => {
+      const distanceTextElement = distanceElement.querySelector('div:nth-child(1)');
+      if (distanceTextElement && !distanceTextElement.innerText.includes('INR')) {
+        addTripCost();
+      }
+    });
+  });
   observer.observe(document.body, { childList: true, subtree: true });
   
