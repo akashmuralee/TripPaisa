@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Trip Paisa",
     "version": "1.0",
-    "description": "TripPaisa calculates and displays the estimated trip cost based on the distance traveled, fuel price, and vehicle mileage directly within Google Maps. It seamlessly integrates with the Google Maps interface to provide a convenient and real-time estimate of fuel expenses for your trips.",
+    "description": "TripPaisa calculates and displays the estimated trip cost based on the distance, fuel price, and vehicle mileage directly within Google Maps. It seamlessly integrates with the Google Maps interface to provide a convenient and real-time estimate of fuel expenses for your trips.",
     "action": {
       "default_popup": "popup.html",
       "default_icon": {
