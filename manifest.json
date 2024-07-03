@@ -12,13 +12,8 @@
       }
     },
     "permissions": [
-      "storage",
-      "activeTab",
-      "scripting"
+      "storage"
     ],
-    "background": {
-      "service_worker": "background.js"
-    },
     "content_scripts": [
       {
         "matches": ["https://www.google.com/maps/*"],
